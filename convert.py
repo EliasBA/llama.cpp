@@ -811,12 +811,10 @@ class OutputFile:
 
     def add_meta_arch(self, params: Params) -> None:
         name = "LLaMA"
-
-        # TODO: better logic to determine model name
         if (params.n_ctx == 4096):
             name = "LLaMA v2"
-        elif params.path_model:
-            name = str(params.path_model.parent).split('/')[-1]
+            if params.path_model:
+                name = str(params.path_model.parent).split('/')[-1]
 
         self.gguf.add_name                (name)
         self.gguf.add_context_length      (params.n_ctx)
@@ -841,7 +839,8 @@ class OutputFile:
         tokens = []
         scores = []
         toktypes = []
-        # NOTE: `all_tokens` returns the base vocabulary and added tokens
+        # NOTE: `all_tokens` returns the the base vocabulary and added tokens
+        # TODO: add special tokens?
         for text, score, toktype in vocab.all_tokens():
             tokens.append(text)
             scores.append(score)
